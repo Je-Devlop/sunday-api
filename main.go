@@ -12,12 +12,25 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	db, err := gorm.Open(postgres.Open("postgres://sunday:secret@localhost:5432/sunday"))
+	liveFile := "/tmp/live"
+	_, err := os.Create(liveFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.Remove("/tmp/live")
+
+	err = godotenv.Load("local.env")
+	if err != nil {
+		log.Printf("please consider environment variable: %s\n", err)
+	}
+
+	db, err := gorm.Open(postgres.Open(os.Getenv("DB_CONN")))
 	if err != nil {
 		panic(err.Error())
 	}
@@ -26,6 +39,10 @@ func main() {
 	scoopsHandler := sunday.NewSundayHandler(db)
 
 	r := gin.Default()
+	r.GET("healthz", func(ctx *gin.Context) {
+		ctx.Status(200)
+	})
+
 	r.POST("/create-scoops", scoopsHandler.CreateScoops)
 
 	server := newServer(r)
