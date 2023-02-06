@@ -1,33 +1,41 @@
 package sunday
 
 import (
-	"bytes"
-	"net/http"
-	"net/http/httptest"
 	"testing"
-
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
+
+type TestDB struct{}
+
+func (t *TestDB) New(scoop *Scoop) error {
+	return nil
+}
+
+type TestContext struct {
+	httpStatus int
+}
+
+func (t *TestContext) Bind(v interface{}) error {
+	t.httpStatus = 400
+	return nil
+}
+
+func (t *TestContext) JSON(status int, v interface{}) {
+
+}
 
 func TestCreateScoops(t *testing.T) {
 
 	t.Run("it should error when request is empty", func(t *testing.T) {
-		h := NewSundayHandler(&gorm.DB{})
+		h := NewSundayHandler(&TestDB{})
 
-		w := httptest.NewRecorder()
-		payload := bytes.NewBufferString(`{name:"", image_path:""}`)
-		req, _ := http.NewRequest("POST", "http://0.0.0.0:8080/create-scoops", payload)
-
-		c, _ := gin.CreateTestContext(w)
-		c.Request = req
+		c := &TestContext{}
 
 		h.CreateScoops(c)
 
 		want := 400
 
-		if want != w.Result().StatusCode {
-			t.Errorf("want %d but get %s\n", want, w.Result().Status)
+		if want != c.httpStatus {
+			t.Errorf("want %d but get %d\n", want, c.httpStatus)
 		}
 
 	})

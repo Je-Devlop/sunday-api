@@ -1,6 +1,8 @@
 package main
 
 import (
+	"Je-Devlop/sunday-api/router"
+	"Je-Devlop/sunday-api/store"
 	"Je-Devlop/sunday-api/sunday"
 	"context"
 	"fmt"
@@ -36,9 +38,10 @@ func main() {
 	}
 	db.AutoMigrate(&sunday.Scoop{})
 
-	scoopsHandler := sunday.NewSundayHandler(db)
+	store := store.NewGormStore(db)
+	scoopsHandler := sunday.NewSundayHandler(store)
 
-	r := gin.Default()
+	r := router.NewMyRouter()
 	r.GET("healthz", func(ctx *gin.Context) {
 		ctx.Status(200)
 	})

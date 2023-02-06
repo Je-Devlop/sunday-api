@@ -3,7 +3,6 @@ package sunday
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -13,31 +12,40 @@ type Scoop struct {
 	ImagePath string `json:"image_path" binding:"required"`
 }
 
+type stores interface {
+	New(*Scoop) error
+}
+
 type SundayHandler struct {
-	db *gorm.DB
+	store stores
 }
 
-func NewSundayHandler(db *gorm.DB) *SundayHandler {
-	return &SundayHandler{db: db}
+type Context interface {
+	Bind(interface{}) error
+	JSON(int, interface{})
 }
 
-func (s *SundayHandler) CreateScoops(c *gin.Context) {
+func NewSundayHandler(store stores) *SundayHandler {
+	return &SundayHandler{store: store}
+}
+
+func (s *SundayHandler) CreateScoops(c Context) {
 	var scoop Scoop
-	if err := c.ShouldBind(&scoop); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+	if err := c.Bind(&scoop); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	r := s.db.Create(&scoop)
-	if err := r.Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+	err := s.store.New(&scoop)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": err,
 		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{})
+	c.JSON(http.StatusCreated, map[string]interface{}{})
 
 }
