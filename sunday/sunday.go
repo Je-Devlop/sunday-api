@@ -20,16 +20,11 @@ type SundayHandler struct {
 	store stores
 }
 
-type Context interface {
-	Bind(interface{}) error
-	JSON(int, interface{})
-}
-
 func NewSundayHandler(store stores) *SundayHandler {
 	return &SundayHandler{store: store}
 }
 
-func (s *SundayHandler) CreateScoops(c Context) {
+func (s *SundayHandler) CreateScoops(c FrameworkContext) {
 	var scoop Scoop
 	if err := c.Bind(&scoop); err != nil {
 		c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -47,5 +42,9 @@ func (s *SundayHandler) CreateScoops(c Context) {
 	}
 
 	c.JSON(http.StatusCreated, map[string]interface{}{})
+
+}
+
+func (s *SundayHandler) GetSundayScoops(c FrameworkContext) {
 
 }

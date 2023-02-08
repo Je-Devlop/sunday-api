@@ -2,7 +2,7 @@ package main
 
 import (
 	"Je-Devlop/sunday-api/router"
-	"Je-Devlop/sunday-api/store"
+	"Je-Devlop/sunday-api/store/db"
 	"Je-Devlop/sunday-api/sunday"
 	"context"
 	"fmt"
@@ -13,10 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -32,21 +29,17 @@ func main() {
 		log.Printf("please consider environment variable: %s\n", err)
 	}
 
-	db, err := gorm.Open(postgres.Open(os.Getenv("DB_CONN")))
+	store, err := db.NewPostgres(os.Getenv("DB_CONN"))
 	if err != nil {
 		panic(err.Error())
 	}
-	db.AutoMigrate(&sunday.Scoop{})
-
-	store := store.NewGormStore(db)
-	scoopsHandler := sunday.NewSundayHandler(store)
 
 	r := router.NewMyRouter()
-	r.GET("healthz", func(ctx *gin.Context) {
-		ctx.Status(200)
-	})
+
+	scoopsHandler := sunday.NewSundayHandler(store)
 
 	r.POST("/create-scoops", scoopsHandler.CreateScoops)
+	r.GET("/scoops", scoopsHandler.GetSundayScoops)
 
 	server := newServer(r)
 
