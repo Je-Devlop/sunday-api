@@ -14,6 +14,14 @@ func (t *TestDB) GetAllIceCreamScoops() ([]Scoop, error) {
 	return []Scoop{}, nil
 }
 
+func (t *TestDB) CreateICreamTopping(Topping) error {
+	return nil
+}
+
+func (t *TestDB) GetAllIceCreamToppings() ([]Topping, error) {
+	return []Topping{}, nil
+}
+
 type TestContext struct {
 	httpStatus int
 }

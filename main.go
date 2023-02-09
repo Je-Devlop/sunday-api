@@ -51,6 +51,8 @@ func main() {
 
 	r.POST("/create-scoops", scoopsHandler.CreateScoops)
 	r.GET("/scoops", scoopsHandler.GetSundayScoops)
+	r.POST("/create-toppings", scoopsHandler.CreateTopping)
+	r.GET("/toppings", scoopsHandler.GetSundayTopping)
 
 	server := newServer(r)
 

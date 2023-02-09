@@ -20,7 +20,7 @@ func NewPostgres(dns string) (*Postgres, error) {
 		panic(err.Error())
 	}
 
-	if err := db.AutoMigrate(&IceCreamScoop{}); err != nil {
+	if err := db.AutoMigrate(&IceCreamScoop{}, &IceCreamTopping{}); err != nil {
 		return nil, err
 	}
 	return &Postgres{db}, nil
@@ -49,4 +49,29 @@ func (db *Postgres) GetAllIceCreamScoops() ([]sunday.Scoop, error) {
 	}
 
 	return scoop, nil
+}
+
+func (db *Postgres) CreateICreamTopping(topping sunday.Topping) error {
+	timeNow := time.Now()
+	t := db.DB.Exec("INSERT INTO ice_cream_toppings(name, image_path, created_at, updated_at, deleted_at) VALUES(?,?,?,?,?)", topping.Name, topping.ImagePath, timeNow, timeNow, timeNow)
+	if err := t.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *Postgres) GetAllIceCreamToppings() ([]sunday.Topping, error) {
+	var toppings []sunday.Topping
+	r := db.Table("ice_cream_toppings").Find(&toppings)
+
+	if err := r.Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []sunday.Topping{}, nil
+		} else {
+			return []sunday.Topping{}, err
+		}
+	}
+
+	return toppings, nil
 }

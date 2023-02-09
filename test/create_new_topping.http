@@ -1,0 +1,9 @@
+@base_url=http://localhost:8081
+
+POST {{base_url}}/create-toppings
+Content-Type: application/json
+
+{
+    "name": "Gummi Bears",
+    "image_path": "/images/gummi-bears.png"
+}
