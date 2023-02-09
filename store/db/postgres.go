@@ -2,13 +2,15 @@ package db
 
 import (
 	"Je-Devlop/sunday-api/sunday"
+	"errors"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type Postgres struct {
-	db *gorm.DB
+	*gorm.DB
 }
 
 func NewPostgres(dns string) (*Postgres, error) {
@@ -18,12 +20,33 @@ func NewPostgres(dns string) (*Postgres, error) {
 		panic(err.Error())
 	}
 
-	if err := db.AutoMigrate(&sunday.Scoop{}); err != nil {
+	if err := db.AutoMigrate(&IceCreamScoop{}); err != nil {
 		return nil, err
 	}
 	return &Postgres{db}, nil
 }
 
-func (s *Postgres) New(scoop *sunday.Scoop) error {
-	return s.db.Create(scoop).Error
+func (db *Postgres) CreateICreamScoop(scoop sunday.Scoop) error {
+	timeNow := time.Now()
+	t := db.DB.Exec("INSERT INTO ice_cream_scoops(name, image_path, created_at, updated_at, deleted_at) VALUES(?,?,?,?,?)", scoop.Name, scoop.ImagePath, timeNow, timeNow, timeNow)
+	if err := t.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *Postgres) GetAllIceCreamScoops() ([]sunday.Scoop, error) {
+	var scoop []sunday.Scoop
+	r := db.Table("ice_cream_scoops").Find(&scoop)
+
+	if err := r.Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []sunday.Scoop{}, nil
+		} else {
+			return []sunday.Scoop{}, err
+		}
+	}
+
+	return scoop, nil
 }

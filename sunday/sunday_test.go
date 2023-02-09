@@ -6,8 +6,12 @@ import (
 
 type TestDB struct{}
 
-func (t *TestDB) New(scoop *Scoop) error {
+func (t *TestDB) CreateICreamScoop(scoop Scoop) error {
 	return nil
+}
+
+func (t *TestDB) GetAllIceCreamScoops() ([]Scoop, error) {
+	return []Scoop{}, nil
 }
 
 type TestContext struct {
@@ -20,7 +24,6 @@ func (t *TestContext) Bind(v interface{}) error {
 }
 
 func (t *TestContext) JSON(status int, v interface{}) {
-
 }
 
 func TestCreateScoops(t *testing.T) {

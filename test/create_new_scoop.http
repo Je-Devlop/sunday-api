@@ -4,6 +4,6 @@ POST {{base_url}}/create-scoops
 Content-Type: application/json
 
 {
-    "name": "stawberry",
-    "image_path": "/images/stawberry.png"
+    "name": "Salted-caramel",
+    "image_path": "/images/salted-caramel.png"
 }
