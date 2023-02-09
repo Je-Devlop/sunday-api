@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -35,6 +36,16 @@ func main() {
 	}
 
 	r := router.NewMyRouter()
+	r.Static("/images", "public/images")
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{
+		"http://localhost:3000",
+	}
+	config.AllowHeaders = []string{
+		"Origin",
+		"Authorization",
+	}
+	r.Use(cors.New(config))
 
 	scoopsHandler := sunday.NewSundayHandler(store)
 
