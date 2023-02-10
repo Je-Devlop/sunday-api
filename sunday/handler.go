@@ -1,6 +1,9 @@
 package sunday
 
-import "net/http"
+import (
+	"math/rand"
+	"net/http"
+)
 
 type Handler struct {
 	store stores
@@ -68,4 +71,8 @@ func (s *Handler) GetSundayTopping(c FrameworkContext) {
 	}
 
 	c.JSON(http.StatusOK, toppings)
+}
+
+func (s *Handler) OrderIceCream(c FrameworkContext) {
+	c.JSON(http.StatusOK, rand.Intn(10000000000))
 }

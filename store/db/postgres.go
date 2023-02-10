@@ -20,7 +20,7 @@ func NewPostgres(dns string) (*Postgres, error) {
 		panic(err.Error())
 	}
 
-	if err := db.AutoMigrate(&IceCreamScoop{}, &IceCreamTopping{}); err != nil {
+	if err := db.AutoMigrate(&IceCreamScoop{}, &IceCreamTopping{}, &OrderDetail{}, &IceCreamScoopDetail{}, &IceCreamToppingDetail{}); err != nil {
 		return nil, err
 	}
 	return &Postgres{db}, nil
