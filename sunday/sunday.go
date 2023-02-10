@@ -3,11 +3,13 @@ package sunday
 type Scoop struct {
 	Name      string `json:"name" binding:"required"`
 	ImagePath string `json:"image_path" binding:"required"`
+	Price     int64  `json:"price" binding:"required"`
 }
 
 type Topping struct {
 	Name      string `json:"name" binding:"required"`
 	ImagePath string `json:"image_path" binding:"required"`
+	Price     int64  `json:"price" binding:"required"`
 }
 
 type stores interface {

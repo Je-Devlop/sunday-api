@@ -6,12 +6,14 @@ type IceCreamScoop struct {
 	gorm.Model
 	Name      string `gorm:"type:varchar(50);not null"`
 	ImagePath string `gorm:"type:varchar(50);not null"`
+	Price     int64  `gorm:"not null"`
 }
 
 type IceCreamTopping struct {
 	gorm.Model
 	Name      string `gorm:"type:varchar(50);not null"`
 	ImagePath string `gorm:"type:varchar(50);not null"`
+	Price     int64  `gorm:"not null"`
 }
 
 func (IceCreamScoop) TableName() string {

@@ -28,7 +28,7 @@ func NewPostgres(dns string) (*Postgres, error) {
 
 func (db *Postgres) CreateICreamScoop(scoop sunday.Scoop) error {
 	timeNow := time.Now()
-	t := db.DB.Exec("INSERT INTO ice_cream_scoops(name, image_path, created_at, updated_at, deleted_at) VALUES(?,?,?,?,?)", scoop.Name, scoop.ImagePath, timeNow, timeNow, timeNow)
+	t := db.DB.Exec("INSERT INTO ice_cream_scoops(name, image_path,price, created_at, updated_at, deleted_at) VALUES(?,?,?,?,?)", scoop.Name, scoop.ImagePath, scoop.Price, timeNow, timeNow, timeNow)
 	if err := t.Error; err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (db *Postgres) GetAllIceCreamScoops() ([]sunday.Scoop, error) {
 
 func (db *Postgres) CreateICreamTopping(topping sunday.Topping) error {
 	timeNow := time.Now()
-	t := db.DB.Exec("INSERT INTO ice_cream_toppings(name, image_path, created_at, updated_at, deleted_at) VALUES(?,?,?,?,?)", topping.Name, topping.ImagePath, timeNow, timeNow, timeNow)
+	t := db.DB.Exec("INSERT INTO ice_cream_toppings(name, image_path, price, created_at, updated_at, deleted_at) VALUES(?,?,?,?,?)", topping.Name, topping.ImagePath, topping.Price, timeNow, timeNow, timeNow)
 	if err := t.Error; err != nil {
 		return err
 	}
