@@ -37,6 +37,7 @@ func main() {
 
 	r := router.NewMyRouter()
 	r.Static("/images", "public/images")
+
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{
 		"http://localhost:3000",
@@ -44,6 +45,7 @@ func main() {
 	config.AllowHeaders = []string{
 		"Origin",
 		"Authorization",
+		"content-type",
 	}
 	r.Use(cors.New(config))
 
@@ -53,7 +55,7 @@ func main() {
 	r.GET("/scoops", scoopsHandler.GetSundayScoops)
 	r.POST("/create-toppings", scoopsHandler.CreateTopping)
 	r.GET("/toppings", scoopsHandler.GetSundayTopping)
-	r.GET("/order", scoopsHandler.OrderIceCream)
+	r.POST("/order", scoopsHandler.OrderIceCream)
 
 	server := newServer(r)
 
